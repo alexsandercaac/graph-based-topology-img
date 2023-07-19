@@ -1,0 +1,15 @@
+schema: '2.0'
+stages:
+  download_data:
+    cmd: python src/download_data.py
+    deps:
+    - path: src/download_data.py
+      hash: md5
+      md5: dc32844ea6761c5d964cae0c41cf0aa2
+      size: 203
+    outs:
+    - path: data/raw/MNIST
+      hash: md5
+      md5: 563f931b5aa3d66aaee35ca9ea59ff3e.dir
+      size: 66544770
+      nfiles: 8

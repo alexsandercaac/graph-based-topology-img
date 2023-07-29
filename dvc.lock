@@ -5,11 +5,30 @@ stages:
     deps:
     - path: src/download_data.py
       hash: md5
-      md5: dc32844ea6761c5d964cae0c41cf0aa2
-      size: 203
+      md5: e55f27ee8d3cc53b13405907502c3be2
+      size: 482
     outs:
     - path: data/raw/MNIST
       hash: md5
       md5: 563f931b5aa3d66aaee35ca9ea59ff3e.dir
       size: 66544770
       nfiles: 8
+    - path: data/raw/caltech101
+      hash: md5
+      md5: 23cf8fe606baa74acff03ab87c29b49b.dir
+      size: 291511027
+      nfiles: 17829
+    - path: data/raw/cifar-10-batches-py
+      hash: md5
+      md5: 2c2c368a819f1df18fd0afa1c052c6c4.dir
+      size: 186214114
+      nfiles: 8
+    - path: data/raw/cifar-10-python.tar.gz
+      hash: md5
+      md5: c58f30108f718f92721af3b95e74349a
+      size: 170498071
+    - path: data/raw/oxford-iiit-pet
+      hash: md5
+      md5: fb773eb63522b0c8aa0f3e545779c7f2.dir
+      size: 1632137285
+      nfiles: 25866

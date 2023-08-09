@@ -4,17 +4,28 @@
 import torchvision
 import torch
 
+from torch import nn
+
 from utils.dvc.params import get_params
+from utils.models.training import train_model
 
 
 params = get_params()
 
 # Batch size used in training
 BATCH_SIZE = params['batch_size']
+# Number of epochs to train
+NUM_EPOCHS = params['num_epochs']
+# Initial learning rate
+INITIAL_LR = params['initial_lr']
+# Learning rate decay factor
+LR_DECAY_FACTOR = params['lr_decay_factor']
+# Number of epochs after which to decay the learning rate
+LR_DECAY_STEP = params['lr_decay_step']
 # Path to the raw data
 ROOT = 'data/raw'
 # List of datasets to train on
-DATASETS = ['mnist', 'cifar10']
+DATASETS = ['cifar10']
 
 for dataset_name in DATASETS:
     print("Dataset: ", dataset_name)
@@ -91,3 +102,39 @@ for dataset_name in DATASETS:
     print("Class names: ", class_names)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+    # Load the pretrained model
+    model_conv = torchvision.models.resnet18(weights='IMAGENET1K_V1')
+    for param in model_conv.parameters():
+        param.requires_grad = False
+
+    num_ftrs = model_conv.fc.in_features
+    model_conv.fc = nn.Linear(num_ftrs, len(class_names))
+
+    model_conv = model_conv.to(device)
+
+    criterion = nn.CrossEntropyLoss()
+
+    optimizer_conv = torch.optim.Adam(
+        model_conv.fc.parameters(),
+        lr=INITIAL_LR
+    )
+
+    exp_lr_scheduler = torch.optim.lr_scheduler.StepLR(
+        optimizer_conv,
+        step_size=LR_DECAY_STEP,
+        gamma=LR_DECAY_FACTOR
+    )
+
+    model_conv = train_model(
+        model_conv,
+        criterion,
+        optimizer_conv,
+        exp_lr_scheduler,
+        device,
+        dataloaders,
+        dataset_sizes,
+        NUM_EPOCHS
+    )
+
+    torch.save(model_conv.state_dict(), f'models/{dataset_name}_model.pt')

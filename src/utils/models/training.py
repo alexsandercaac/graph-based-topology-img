@@ -88,15 +88,16 @@ def train_model(
 
                 epoch_loss = running_loss / dataset_sizes[phase]
                 epoch_acc = running_corrects.double() / dataset_sizes[phase]
-
-                print(f'{phase} Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}')
+                if verbose:
+                    print(
+                        f'{phase} Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}')
 
                 # deep copy the model
                 if phase == 'val' and epoch_acc > best_acc:
                     best_acc = epoch_acc
                     torch.save(model.state_dict(), best_model_params_path)
-
-        print(f'Best val Acc: {best_acc:4f}')
+        if verbose:
+            print(f'Best val Acc: {best_acc:4f}')
 
         # Load best model weights and return it
         model.load_state_dict(torch.load(best_model_params_path))

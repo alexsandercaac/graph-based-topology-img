@@ -9,3 +9,12 @@ stages:
     - data/raw/cifar-10-batches-py
     - data/raw/cifar-10-python.tar.gz
     - data/raw/oxford-iiit-pet
+  model_training:
+    cmd: python src/model_training.py
+    deps:
+    - src/model_training.py
+    - src/utils/models/training.py
+    - src/utils/dvc/params.py
+    - data/raw
+    outs:
+    - models/cifar10_model.pt

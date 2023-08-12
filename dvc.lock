@@ -32,3 +32,28 @@ stages:
       md5: fb773eb63522b0c8aa0f3e545779c7f2.dir
       size: 1632137285
       nfiles: 25866
+  model_training:
+    cmd: python src/model_training.py
+    deps:
+    - path: data/raw
+      hash: md5
+      md5: b5f52fce1fd04854bda0e200b4e7cc88.dir
+      size: 2346905348
+      nfiles: 43714
+    - path: src/model_training.py
+      hash: md5
+      md5: 0fd3a5e30210eff49ea23aab4cb51746
+      size: 4167
+    - path: src/utils/dvc/params.py
+      hash: md5
+      md5: c57ff0542069d8b6236b09e7aee32be8
+      size: 1268
+    - path: src/utils/models/training.py
+      hash: md5
+      md5: 1b16c1504ed5ceccb6a74df249957464
+      size: 3702
+    outs:
+    - path: models/cifar10_model.pt
+      hash: md5
+      md5: f9402c25c334c295f31a4d645eca163d
+      size: 44805685

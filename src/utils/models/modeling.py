@@ -102,3 +102,48 @@ def train_model(
         # Load best model weights and return it
         model.load_state_dict(torch.load(best_model_params_path))
     return model
+
+
+def evaluate_model(
+        model: torch.nn.Module,
+        criterion: torch.nn.Module,
+        device: torch.device,
+        dataloader: torch.utils.data.DataLoader) -> tuple:
+    """
+    Evaluate a pytorch model.
+
+    Args:
+        model (torch.nn.Module): Pytorch model to evaluate.
+        criterion (torch.nn.Module): Loss function.
+        device (torch.device): Device to use for evaluation.
+        dataloader (torch.utils.data.DataLoader): Dataloader for evaluation.
+
+    Returns:
+        tuple: Tuple with loss and accuracy.
+
+    """
+    # Initialize loss and corrects
+    running_loss = 0.0
+    running_corrects = 0
+
+    # Set model to evaluate mode
+    model.eval()
+
+    for inputs, labels in dataloader:
+        inputs = inputs.to(device)
+        labels = labels.to(device)
+
+        # Forward pass
+        outputs = model(inputs)
+        # Saturation of the output
+        _, preds = torch.max(outputs, 1)
+        loss = criterion(outputs, labels)
+
+        running_loss += loss.item() * inputs.size(0)
+        running_corrects += torch.sum(preds == labels.data)
+
+    # Calculate loss and accuracy
+    loss = running_loss / len(dataloader.dataset)
+    acc = running_corrects.double() / len(dataloader.dataset)
+
+    return loss, acc

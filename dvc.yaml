@@ -17,4 +17,6 @@ stages:
     - src/utils/dvc/params.py
     - data/raw
     outs:
+    - models/mnist_model.pt
     - models/cifar10_model.pt
+    - models/oxford_iit_pet_model.pt

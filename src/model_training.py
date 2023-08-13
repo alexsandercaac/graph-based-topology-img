@@ -25,7 +25,7 @@ LR_DECAY_STEP = params['lr_decay_step']
 # Path to the raw data
 ROOT = 'data/raw'
 # List of datasets to train on
-DATASETS = ['cifar10']
+DATASETS = ['mnist', 'cifar10', 'oxford_iit_pet']
 
 for dataset_name in DATASETS:
     print("Dataset: ", dataset_name)
@@ -49,11 +49,10 @@ for dataset_name in DATASETS:
             train=True,
             transform=data_transforms['train']
         )
-        dataset_val = torchvision.datasets.MNIST(
-            root=ROOT,
-            download=True,
-            train=False,
-            transform=data_transforms['val']
+
+        dataset_train, dataset_val = torch.utils.data.random_split(
+            dataset_train,
+            [0.8, 0.2]
         )
 
     elif dataset_name == 'cifar10':
@@ -75,13 +74,35 @@ for dataset_name in DATASETS:
             train=True,
             transform=data_transforms['train']
         )
-        dataset_val = torchvision.datasets.CIFAR10(
-            root=ROOT,
-            download=True,
-            train=False,
-            transform=data_transforms['val']
+        dataset_train, dataset_val = torch.utils.data.random_split(
+            dataset_train,
+            [0.8, 0.2]
         )
 
+    elif dataset_name == 'oxford_iit_pet':
+        data_transforms = {
+            'train': torchvision.transforms.Compose([
+                torchvision.transforms.Resize(256),
+                torchvision.transforms.RandomResizedCrop(224),
+                torchvision.transforms.RandomHorizontalFlip(),
+                torchvision.transforms.ToTensor()
+            ]),
+            'val': torchvision.transforms.Compose([
+                torchvision.transforms.Resize(256),
+                torchvision.transforms.CenterCrop(224),
+                torchvision.transforms.ToTensor()
+            ]),
+        }
+        dataset_train = torchvision.datasets.OxfordPets(
+            root=ROOT,
+            download=True,
+            split='trainval',
+            transform=data_transforms['train']
+        )
+        dataset_train, dataset_val = torch.utils.data.random_split(
+            dataset_train,
+            [0.8, 0.2]
+        )
     image_datasets = {
         'train': dataset_train,
         'val': dataset_val
@@ -110,6 +131,13 @@ for dataset_name in DATASETS:
 
     num_ftrs = model_conv.fc.in_features
     model_conv.fc = nn.Linear(num_ftrs, len(class_names))
+    # The mnist dataset has only 1 channel, so the first layer of the model
+    # needs to be changed to accept 1 channel instead of 3
+    if dataset_name == 'mnist':
+        model_conv.conv1 = nn.Conv2d(
+            in_channels=1,
+            out_channels=64,
+            kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
 
     model_conv = model_conv.to(device)
 

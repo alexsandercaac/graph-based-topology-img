@@ -129,6 +129,9 @@ def evaluate_model(
     # Set model to evaluate mode
     model.eval()
 
+    # Set device
+    model = model.to(device)
+
     for inputs, labels in dataloader:
         inputs = inputs.to(device)
         labels = labels.to(device)
@@ -146,4 +149,4 @@ def evaluate_model(
     loss = running_loss / len(dataloader.dataset)
     acc = running_corrects.double() / len(dataloader.dataset)
 
-    return loss, acc
+    return loss, acc.tolist()

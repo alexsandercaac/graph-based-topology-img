@@ -7,7 +7,7 @@ import torch
 from torch import nn
 
 from utils.dvc.params import get_params
-from src.utils.models.modeling import train_model
+from utils.models.modeling import train_model
 
 
 params = get_params()
@@ -49,6 +49,7 @@ for dataset_name in DATASETS:
             train=True,
             transform=data_transforms['train']
         )
+        class_names = dataset_train.classes
 
         dataset_train, dataset_val = torch.utils.data.random_split(
             dataset_train,
@@ -74,6 +75,7 @@ for dataset_name in DATASETS:
             train=True,
             transform=data_transforms['train']
         )
+        class_names = dataset_train.classes
         dataset_train, dataset_val = torch.utils.data.random_split(
             dataset_train,
             [0.8, 0.2]
@@ -93,12 +95,13 @@ for dataset_name in DATASETS:
                 torchvision.transforms.ToTensor()
             ]),
         }
-        dataset_train = torchvision.datasets.OxfordPets(
+        dataset_train = torchvision.datasets.OxfordIIITPet(
             root=ROOT,
             download=True,
             split='trainval',
             transform=data_transforms['train']
         )
+        class_names = dataset_train.classes
         dataset_train, dataset_val = torch.utils.data.random_split(
             dataset_train,
             [0.8, 0.2]
@@ -119,7 +122,6 @@ for dataset_name in DATASETS:
     }
     dataset_sizes = {x: len(image_datasets[x]) for x in ['train', 'val']}
     print("Dataset sizes: ", dataset_sizes)
-    class_names = image_datasets['train'].classes
     print("Class names: ", class_names)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")

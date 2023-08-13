@@ -6,11 +6,8 @@ import json
 import torchvision
 import torch
 
-from utils.dvc.params import get_params
-from src.utils.models.modeling import evaluate_model
+from utils.models.modeling import evaluate_model
 
-
-params = get_params()
 
 # Batch size used in inference
 BATCH_SIZE = 4
@@ -53,13 +50,13 @@ for dataset_name in DATASETS:
             torchvision.transforms.CenterCrop(224),
             torchvision.transforms.ToTensor()
         ])
-        dataset_test = torchvision.datasets.OxfordPets(
+        dataset_test = torchvision.datasets.OxfordIIITPet(
             root=ROOT,
             download=True,
             split='test',
             transform=data_transform
         )
-
+    class_names = dataset_test.classes
     dataloader = torch.utils.data.DataLoader(
         dataset_test,
         batch_size=BATCH_SIZE,
@@ -70,20 +67,44 @@ for dataset_name in DATASETS:
     print("Test dataset size: ", dataset_size)
 
     # Load the model
-    model = torch.load(f'models/{dataset_name}_model.pt')
+    model_conv = torchvision.models.resnet18(weights='IMAGENET1K_V1')
+    for param in model_conv.parameters():
+        param.requires_grad = False
 
+    num_ftrs = model_conv.fc.in_features
+    model_conv.fc = torch.nn.Linear(num_ftrs, len(class_names))
+    # The mnist dataset has only 1 channel, so the first layer of the model
+    # needs to be changed to accept 1 channel instead of 3
+    if dataset_name == 'mnist':
+        model_conv.conv1 = torch.nn.Conv2d(
+            in_channels=1,
+            out_channels=64,
+            kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+    model_state = torch.load(f'models/{dataset_name}_model.pt')
+
+    model_conv.load_state_dict(model_state)
+    print("Successfully loaded trained model")
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+    criterion = torch.nn.CrossEntropyLoss()
     # Evaluate the model
-    avg_loss, avg_acc = evaluate_model(model, dataloader, dataset_size, params)
+    model_conv.to(device)
+    avg_loss, avg_acc = evaluate_model(
+        model=model_conv,
+        criterion=criterion,
+        device=device,
+        dataloader=dataloader
+    )
 
     print(f"Average loss: {avg_loss:.4f}, Average accuracy: {avg_acc:.4f}")
 
     metrics = {
         'avg_loss': avg_loss,
-        'avg_acc': avg_acc
+        'avg_acc': avg_acc.tolist()
     }
 
     metrics_dict[dataset_name] = metrics
-
+print(metrics_dict)
 # Write the metrics to a file
-with open('metrics.json', 'w') as f:
+with open('metrics/metrics.json', 'w') as f:
     json.dump(metrics_dict, f)

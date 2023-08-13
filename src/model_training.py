@@ -7,7 +7,7 @@ import torch
 from torch import nn
 
 from utils.dvc.params import get_params
-from utils.models.training import train_model
+from src.utils.models.modeling import train_model
 
 
 params = get_params()

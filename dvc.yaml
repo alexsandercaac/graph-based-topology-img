@@ -13,10 +13,24 @@ stages:
     cmd: python src/model_training.py
     deps:
     - src/model_training.py
-    - src/utils/models/training.py
+    - src/utils/models/modeling.py
     - src/utils/dvc/params.py
     - data/raw
     outs:
     - models/mnist_model.pt
     - models/cifar10_model.pt
     - models/oxford_iit_pet_model.pt
+  evaluation:
+    cmd: python src/evaluation.py
+    deps:
+    - src/evaluation.py
+    - src/utils/models/modeling.py
+    - src/utils/dvc/params.py
+    - models/mnist_model.pt
+    - models/cifar10_model.pt
+    - models/oxford_iit_pet_model.pt
+    - data/raw
+    metrics:
+    - metrics/metrics.json:
+        cache: false
+        desc: "Metrics for the models with all datasets"

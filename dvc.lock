@@ -42,18 +42,63 @@ stages:
       nfiles: 43714
     - path: src/model_training.py
       hash: md5
-      md5: 0fd3a5e30210eff49ea23aab4cb51746
-      size: 4167
+      md5: 98f55bd074ddefcdd52c840c208ad093
+      size: 5425
     - path: src/utils/dvc/params.py
       hash: md5
       md5: c57ff0542069d8b6236b09e7aee32be8
       size: 1268
-    - path: src/utils/models/training.py
+    - path: src/utils/models/modeling.py
       hash: md5
-      md5: 1b16c1504ed5ceccb6a74df249957464
-      size: 3702
+      md5: a0a8aae64ffcfa485438e65b4275884e
+      size: 5004
     outs:
     - path: models/cifar10_model.pt
       hash: md5
-      md5: f9402c25c334c295f31a4d645eca163d
+      md5: 7405391450efe5ed38ef36fc67df5fdc
       size: 44805685
+    - path: models/mnist_model.pt
+      hash: md5
+      md5: b7a3ae2cf473db4b881136a8648b6444
+      size: 44780349
+    - path: models/oxford_iit_pet_model.pt
+      hash: md5
+      md5: ff2685b94945c1efa654ab0cb699e4d6
+      size: 44861977
+  evaluation:
+    cmd: python src/evaluation.py
+    deps:
+    - path: data/raw
+      hash: md5
+      md5: b5f52fce1fd04854bda0e200b4e7cc88.dir
+      size: 2346905348
+      nfiles: 43714
+    - path: models/cifar10_model.pt
+      hash: md5
+      md5: 7405391450efe5ed38ef36fc67df5fdc
+      size: 44805685
+    - path: models/mnist_model.pt
+      hash: md5
+      md5: b7a3ae2cf473db4b881136a8648b6444
+      size: 44780349
+    - path: models/oxford_iit_pet_model.pt
+      hash: md5
+      md5: ff2685b94945c1efa654ab0cb699e4d6
+      size: 44861977
+    - path: src/evaluation.py
+      hash: md5
+      md5: 8b06877209202ee3fe15091da120924d
+      size: 3365
+    - path: src/utils/dvc/params.py
+      hash: md5
+      md5: c57ff0542069d8b6236b09e7aee32be8
+      size: 1268
+    - path: src/utils/models/modeling.py
+      hash: md5
+      md5: a0a8aae64ffcfa485438e65b4275884e
+      size: 5004
+    outs:
+    - path: metrics/metrics.json
+      hash: md5
+      md5: f53330ff693b5abbde20c7ac86621c7d
+      size: 209

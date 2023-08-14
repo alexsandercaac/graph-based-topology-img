@@ -88,7 +88,7 @@ for dataset_name in DATASETS:
 
     criterion = torch.nn.CrossEntropyLoss()
     # Evaluate the model
-    model_conv.to(device)
+
     avg_loss, avg_acc = evaluate_model(
         model=model_conv,
         criterion=criterion,
@@ -100,7 +100,7 @@ for dataset_name in DATASETS:
 
     metrics = {
         'avg_loss': avg_loss,
-        'avg_acc': avg_acc.tolist()
+        'avg_acc': avg_acc
     }
 
     metrics_dict[dataset_name] = metrics

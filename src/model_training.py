@@ -12,6 +12,8 @@ from utils.models.modeling import train_model
 
 params = get_params()
 
+# Dimensionality of embedding
+EMBEDDING_DIM = params['embedding_dim']
 # Batch size used in training
 BATCH_SIZE = params['batch_size']
 # Number of epochs to train
@@ -132,7 +134,14 @@ for dataset_name in DATASETS:
         param.requires_grad = False
 
     num_ftrs = model_conv.fc.in_features
-    model_conv.fc = nn.Linear(num_ftrs, len(class_names))
+    mlp = nn.Sequential(
+        nn.Linear(num_ftrs, 64),
+        nn.ReLU(),
+        nn.Linear(64, EMBEDDING_DIM),
+        nn.ReLU(),
+        nn.Linear(EMBEDDING_DIM, len(class_names))
+    )
+    model_conv.fc = mlp
     # The mnist dataset has only 1 channel, so the first layer of the model
     # needs to be changed to accept 1 channel instead of 3
     if dataset_name == 'mnist':

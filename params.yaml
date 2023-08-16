@@ -4,3 +4,4 @@ model_training:
     initial_lr: 0.001
     lr_decay_factor: 0.1
     lr_decay_step: 7
+    embedding_dim: 16

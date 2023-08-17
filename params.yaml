@@ -1,7 +1,8 @@
+all:
+    embedding_dim: 16
 model_training:
-    batch_size: 4
-    num_epochs: 20
+    batch_size: 8
+    num_epochs: 50
     initial_lr: 0.001
     lr_decay_factor: 0.1
     lr_decay_step: 7
-    embedding_dim: 16

@@ -42,8 +42,8 @@ stages:
       nfiles: 43714
     - path: src/model_training.py
       hash: md5
-      md5: 98f55bd074ddefcdd52c840c208ad093
-      size: 5425
+      md5: 9a416c3abe0711fcf0aa0f9d6bbccfc2
+      size: 5652
     - path: src/utils/dvc/params.py
       hash: md5
       md5: c57ff0542069d8b6236b09e7aee32be8
@@ -52,19 +52,26 @@ stages:
       hash: md5
       md5: a0a8aae64ffcfa485438e65b4275884e
       size: 5004
+    params:
+      params.yaml:
+        model_training.batch_size: 8
+        model_training.initial_lr: 0.001
+        model_training.lr_decay_factor: 0.1
+        model_training.lr_decay_step: 7
+        model_training.num_epochs: 50
     outs:
     - path: models/cifar10_model.pt
       hash: md5
-      md5: 7405391450efe5ed38ef36fc67df5fdc
-      size: 44805685
+      md5: 2777acd924c83a8f305860a1a4d8c58e
+      size: 44922693
     - path: models/mnist_model.pt
       hash: md5
-      md5: b7a3ae2cf473db4b881136a8648b6444
-      size: 44780349
+      md5: eb2eb8a28305e60ad0b7174daa90187e
+      size: 44897349
     - path: models/oxford_iit_pet_model.pt
       hash: md5
-      md5: ff2685b94945c1efa654ab0cb699e4d6
-      size: 44861977
+      md5: fa8eaec420e0d31050c15d487f82691f
+      size: 44925445
   evaluation:
     cmd: python src/evaluation.py
     deps:
@@ -75,20 +82,20 @@ stages:
       nfiles: 43714
     - path: models/cifar10_model.pt
       hash: md5
-      md5: 7405391450efe5ed38ef36fc67df5fdc
-      size: 44805685
+      md5: 2777acd924c83a8f305860a1a4d8c58e
+      size: 44922693
     - path: models/mnist_model.pt
       hash: md5
-      md5: b7a3ae2cf473db4b881136a8648b6444
-      size: 44780349
+      md5: eb2eb8a28305e60ad0b7174daa90187e
+      size: 44897349
     - path: models/oxford_iit_pet_model.pt
       hash: md5
-      md5: ff2685b94945c1efa654ab0cb699e4d6
-      size: 44861977
+      md5: fa8eaec420e0d31050c15d487f82691f
+      size: 44925445
     - path: src/evaluation.py
       hash: md5
-      md5: 8b06877209202ee3fe15091da120924d
-      size: 3365
+      md5: ac86bdb652de23caf4a59a72ebf06d99
+      size: 3689
     - path: src/utils/dvc/params.py
       hash: md5
       md5: c57ff0542069d8b6236b09e7aee32be8
@@ -97,8 +104,11 @@ stages:
       hash: md5
       md5: a0a8aae64ffcfa485438e65b4275884e
       size: 5004
+    params:
+      params.yaml:
+        all.embedding_dim: 16
     outs:
     - path: metrics/metrics.json
       hash: md5
-      md5: f53330ff693b5abbde20c7ac86621c7d
-      size: 209
+      md5: 3640022a1ac15f925047d2047f84b89c
+      size: 221

@@ -16,6 +16,13 @@ stages:
     - src/utils/models/modeling.py
     - src/utils/dvc/params.py
     - data/raw
+    params:
+    - model_training.batch_size
+    - model_training.num_epochs
+    - model_training.initial_lr
+    - model_training.lr_decay_factor
+    - model_training.lr_decay_step
+    - all.embedding_dim
     outs:
     - models/mnist_model.pt
     - models/cifar10_model.pt
@@ -30,6 +37,8 @@ stages:
     - models/cifar10_model.pt
     - models/oxford_iit_pet_model.pt
     - data/raw
+    params:
+    - all.embedding_dim
     metrics:
     - metrics/metrics.json:
         cache: false

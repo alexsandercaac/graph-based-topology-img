@@ -6,9 +6,13 @@ import json
 import torchvision
 import torch
 
+from utils.dvc.params import get_params
 from utils.models.modeling import evaluate_model
 
+params = get_params('all')
 
+# Dimensionality of embedding
+EMBEDDING_DIM = params['embedding_dim']
 # Batch size used in inference
 BATCH_SIZE = 4
 # Path to the raw data
@@ -72,7 +76,14 @@ for dataset_name in DATASETS:
         param.requires_grad = False
 
     num_ftrs = model_conv.fc.in_features
-    model_conv.fc = torch.nn.Linear(num_ftrs, len(class_names))
+    mlp = torch.nn.Sequential(
+        torch.nn.Linear(num_ftrs, 64),
+        torch.nn.ReLU(),
+        torch.nn.Linear(64, EMBEDDING_DIM),
+        torch.nn.ReLU(),
+        torch.nn.Linear(EMBEDDING_DIM, len(class_names))
+    )
+    model_conv.fc = mlp
     # The mnist dataset has only 1 channel, so the first layer of the model
     # needs to be changed to accept 1 channel instead of 3
     if dataset_name == 'mnist':
